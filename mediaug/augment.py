@@ -35,34 +35,34 @@ def get_data_generator(image_path, mask_path, batch_size=1):
 def randomly_insert_cells(img: np.array, mask: np.array,
 							ds: Dataset, cell_names_to_add: list,
 							num_cell_range: tuple) -> np.array:
-	""" Randomly inserts cells into image
+    """ Randomly inserts cells into image
 
-	Args:
-	  img (np.array)
-	  mask (np.array)
-	  ds (Datset)
-	  num_cell_range (tuple): ex (1, 5)
+    Args:
+        img (np.array)
+        mask (np.array)
+        ds (Datset)
+        num_cell_range (tuple): ex (1, 5)
 
-	Returns:
-      new_img (np.array)
-	  new_mask (np.array)
+    Returns:
+        new_img (np.array)
+        new_mask (np.array)
     """
-	h, w = img.shape[:2]
+    h, w = img.shape[:2]
 
-	cell_list = []
-	for cell_name in cell_names_to_add:
-		cell_list += ds[cell_name]
+    cell_list = []
+    for cell_name in cell_names_to_add:
+        cell_list += ds[cell_name]
 
-	num_cells_to_insert = randint(*num_cell_range)
-	for i in range(num_cells_to_insert):
-		cell = random.choice(cell_list)
-		b = 5
-		pos = (randint(b, h-b), randint(b, w-b))
-		angle = randint(0, 360)
-		scale = random.normalvariate(1, .2)
-		img, mask = add_cell(img, mask, cell.img, cell.mask, pos, angle, scale)
-	print(f'Adding slide with {num_cells_to_insert}')
-	return img, mask
+    num_cells_to_insert = randint(*num_cell_range)
+    for i in range(num_cells_to_insert):
+        cell = random.choice(cell_list)
+        b = 5
+        pos = (randint(b, h-b), randint(b, w-b))
+        angle = randint(0, 360)
+        scale = random.normalvariate(1, .2)
+        img, mask = add_cell(img, mask, cell.img, cell.mask, pos, angle, scale)
+    print(f'Adding slide with {num_cells_to_insert}')
+    return img, mask
 
 
 def add_cell(bg, bg_mask, fg, orig_fg_mask, pos, angle=0, scale=1,

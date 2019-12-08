@@ -1,4 +1,3 @@
-from .utils import test_func
 import pathlib
 from PIL import Image
 import os
@@ -11,8 +10,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-m','--mesage')
     args = parser.parse_args()
-    print(test_func())
-    print(args)
 
 
 @click.command()
