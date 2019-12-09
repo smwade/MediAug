@@ -1,6 +1,6 @@
+import cv2
 import numpy as np
 from PIL import Image, ImageSequence, ImageDraw
-import cv2
 
 from mediaug.utils import convert_array_to_poly
 from mediaug.variables import COLOR_CYTO_MASK, COLOR_NUC_MASK
@@ -23,8 +23,23 @@ def read_png(img_path):
     return cv2.imread(img_path)
 
 
+def read_img(img_path):
+    """ Reads an image
+    Args:
+      img_path (str): The image path (png, jpg, or bmp)
+    Returns:
+      img (np.array): The image array
+    """
+    return cv2.imread(img_path)
+
+
 def read_dat_file(path):
-    """ Reads an .dat file with polygons, the data from SIPaKMeD. Returns np.array """
+    """ Reads an .dat file with polygons, the data from SIPaKMeD
+    Args:
+      path (str): The path to polygon .dat file
+    Returns:
+      poly_array (np.array): Array of (x, y) points for the polygon
+    """
     return np.loadtxt(path, delimiter=',')
 
 

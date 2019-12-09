@@ -44,7 +44,7 @@ def randomly_insert_cells(img: np.array, mask: np.array,
         num_cell_range (tuple): ex (1, 5)
 
     Returns:
-        new_img (np.array)
+       new_img (np.array)
         new_mask (np.array)
     """
     h, w = img.shape[:2]
