@@ -23,8 +23,7 @@ setup(name='mediaug',
       ],
       entry_points={
             'console_scripts': [
-                  'mediaug-test=mediaug.command_line:main',
-                  'mediaug-test2=mediaug.command_line:resize_image',
+                'mediaug=mediaug.command_line:cli'
             ],
       },
       include_package_data=True,

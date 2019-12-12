@@ -1,13 +1,6 @@
 MediAug Documentation
 =====================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   README
-
-
 Overview
 ^^^^^^^^
 
@@ -25,12 +18,35 @@ To install:
 
 .. code-block:: bash
 
-    $ git clone https://github.com/smwade/MediAug
-    $ python setup.py install
+   $ git clone https://github.com/smwade/MediAug
+   $ python setup.py install
+
+CLI
+^^^^^^^^^^^^
+
+MediAug comes with a CLI with useful scripts. These include:
+
+* generate-augment-dataset
+* prepare-pix2pix-images
+* resize-images
+
+The list of all can be seen with the command
+
+.. code-block:: bash
+
+    $ mediaug --help
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Full Documentation:
+
+   source/mediaug
+
 
 
 Indices and tables
-==================
+******************
 
 * :ref:`genindex`
 * :ref:`modindex`
