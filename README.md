@@ -9,7 +9,7 @@ any cell data that has an image and mask of different types of
 cells. Currently supports general image augmentation techniques
 as well as specialized ones like cell insertion and blending.
 
-![example_cell](/Users/sean/project/cancerDetection/MediAug/docs/project_writeup/images/augment/example_cell.png)
+![example_cell](docs/project_writeup/images/augment/example_cell.png)
 
 ## Installation
 
@@ -44,23 +44,26 @@ use another, you must convert the data to the correct format.
 
 ```
 slides/
-		metaplastic/
-				image/
-				mask/
-		parabasal/
-				image/
-				mask/
-		...
+  metaplastic/
+    image/
+    mask/
+  parabasal/
+    image/
+    mask/
+  ...
 ```
 
 And for cells:
 
 ```
 cells/
-		metaplastic/
-				image/
-				mask/
-		...
+  metaplastic/
+    image/
+    mask/
+  parabasal/
+    image/
+    mask/
+  ...
 ```
 
 ## CLI
