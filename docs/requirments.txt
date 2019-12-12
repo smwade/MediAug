@@ -6,3 +6,5 @@ numpy
 matplotlib
 keras
 tensorflow
+ipython
+scikit-image
