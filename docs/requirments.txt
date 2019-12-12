@@ -1,0 +1,8 @@
+click
+opencv-python
+Augmentor
+scikit-learn
+numpy
+matplotlib
+keras
+tensorflow
