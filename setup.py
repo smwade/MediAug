@@ -19,7 +19,9 @@ setup(name='mediaug',
             'Pillow',
             'opencv_python',
             'tqdm',
-            'scikit-image'
+            'scikit-image',
+            'click',
+            'ipython'
       ],
       entry_points={
             'console_scripts': [
