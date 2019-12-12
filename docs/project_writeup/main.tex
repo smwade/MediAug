@@ -1,0 +1,631 @@
+\documentclass[ms,electronic,oneside,twosidetoc,letterpaper,chaptercenter,parttop]{byumsphd}
+% Author: Chris Monson
+%
+% This document is in the public domain
+%
+% Options for this class include the following (* indicates default):
+%
+%   phd (*) -- produce a dissertation
+%   ms -- produce a thesis
+%
+%   electronic -- default official university option, overrides the following:
+%                 - equalmargins
+%
+%   hardcopy -- overrides the following:
+%                 - no equalmargins
+%                 - twoside
+%
+%   letterpaper -- ignored, but helpful for the Makefile that I use
+%
+%   10pt -- 10 point font size
+%   11pt -- 11 point font size
+%   12pt (*) -- 12 point font size
+%
+%   lof -- produce a list of figures in the preamble (off)
+%   lot -- produce a list of tables in the preamble (off)
+%   lol -- produce a list of listings in the preamble (off)
+%
+%   layout -- show layout lines on the pages, helps with overfull boxes (off)
+%   grid -- show a half-inch grid on every page, helps with printing (off)
+%   separator -- print an extra instruction page between preamble and body (off)
+%
+%   twoside (*) -- two-sided output (margins alternate for odd and even pages,
+%     blank pages inserted to ensure that chapters begin on the right side of a
+%     bound copy, etc.)
+%   oneside -- one-sided output (margins are the same on all pages)
+%   equalmargins -- make all margins equal - ugly for binding, but compliant
+%
+%   twosidetoc - start two-sided margins at the TOC instead of the body.  This
+%     is sometimes (oddly) required, but be aware that it will make the page
+%     numbering seem screwy, e.g., the first four full sheets of paper will
+%     have number i-iv (not shown, though), and the next sheets will each have
+%     two numbers, one for each side.  I suspect that most people don't look at
+%     the roman numerals anyway, but it is a weird requirement.
+%
+%   openright (*) -- force new chapters to start on an odd page
+%   openany -- don't use this, it's ugly
+%
+%   prettyheadings -- make the section/chapter headings look nice
+%   compliantheadings (*) -- make them look ugly, but compliant with standards
+%
+%   chaptercenter -- center the chapter headings horizontally
+%   chapterleft (*) -- place chapter headings on the left
+%
+%   partmiddle -- Part headers are centered vertically, no other text on page
+%   parttop (*) -- Part headers at top of page, other text expected
+%
+%   duplexprinter -- Ensures that the two-sided portion starts on the right
+%     side when printing.  This is not for use in submission, since the best
+%     thing to do there is to print everything out one-sided, then take it down
+%     to the copy store to have them do the rest.  It does help to save trees
+%     when you are printing out copies just to look at them and fiddle with
+%     things.
+%
+%
+% EXAMPLES:
+%
+% The rest is up to you.  To fiddle with margins, use the \settextwidth and
+% \setbindingoffset macros, described below.  I suggest that you
+% \settextwidth{6.0in} for better-looking output (otherwise you'll get 3/4-inch
+% margins after binding, which is sort of weird).  This will depend on the
+% opinions of the various dean/coordinator folks, though, so be sure to ask
+% them before embarking on a major formatting task.
+
+% The following command fixes my particular printer, which starts 0.03 inches
+% too low, shifting the whole page down by that amount.  This shifts the
+% document content up so that it comes out right when printed.
+%
+% Discovering this sort of behavior is best done by specifying the ``grid''
+% option in the class parameters above.  It prints a 1/2 inch grid on every
+% page.  You can then use a ruler to determine exactly what the printer is
+% doing.
+%
+% Uncomment to shift content up (accounting for printer problems)
+%\setlength{\voffset}{-.03in}
+
+% Here we set things up for invisible hyperlinks in the document.  This makes
+% the electronic version clickable without changing the way that the document
+% prints.  It's useful, but optional.
+%
+% NOTE: "driverfallback=ps2pdf" chooses ps2pdf in the case of LaTeX and pdftex
+% in the case of pdflatex. If you use my LaTeX makefile (at
+% http://latex-makefile.googlecode.com/) then pdftex is the default There are
+% many other benefits to using the makefile, too.  This option is not always
+% available, so use with care.
+\usepackage[
+    bookmarks=true,
+    bookmarksnumbered=true,
+    breaklinks=false,
+    raiselinks=true,
+    pdfborder={0 0 0},
+    colorlinks=false,
+    plainpages=false,
+    ]{hyperref}
+
+% To fiddle with the margin settings use the below.  DO NOT change stuff
+% directly (like setting \textwidth) - it will break subtle things and you'll
+% be tearing your hair out.
+%
+% For example, if you want 1.5in equal margins, or 2in and 1in margins when
+% printing, add the following below:
+%
+%\setbindingoffset{1.0in}
+%\settextwidth{5.5in}
+%
+% When equalmargins is specified in the class options, the margins will be
+% equal at 1.5in each: (8.5 - 5.5) / 2.  When equalmargins is not specified,
+% the inner margin will be 2.0 and the outer margin will be 1.0: inner = (8.5 -
+% 5.5 - 1.0) / 2 + 1.0 (the 1.0 is the binding offset).
+%
+% The idea is this: you determine how much space the text is going to take up,
+% whether for an electronic document (equalmargins) or not.  You don't want the
+% layout shifting around between printed and electronic documents.
+%
+% So, you specify the text width.  Then, if there is a binding offset (when
+% binding your thesis, the binding takes up space - usually 0.5 inches), that
+% reduces the visual space on the final printed copy.  So, the *effective*
+% margins are calculated by reducing the page size by the binding offset, then
+% computing the remaining space and dividing by two.  Adding back in the
+% binding offset gives the inner margin.  The outer margin is just what's left.
+%
+% All of this is done using the geometry package, which should be manipulated
+% directly at your peril.  It's best just to use the above macros to manipulate
+% your margins.
+%
+% That said, using the geometry macro to set top and bottom margins, or
+% anything else vertical, is perfectly safe and encouraged, e.g.,
+%
+%\geometry{top=2.0in,bottom=2.0in}
+%
+% Just don't fiddle with horizontal margins this way.  You have been warned.
+
+% This makes hyperlinks point to the tops of figures, not their captions
+\usepackage[all]{hypcap}
+
+% These packages allow the bibliography to be sorted alphabetically and allow references to more than one paper to be sorted and compressed (i.e. instead of [5,2,4,6] you get [2,4-6])
+\usepackage[numbers,sort&compress]{natbib}
+
+% Because I use these things in more than one place, I created new commands for
+% them.  I did not use \providecommand because I absolutely want LaTeX to error
+% out if these already exist.
+\newcommand{\Title}{Cervical Cancer Detection Pipeline with Synthetic Data}
+\newcommand{\Author}{Sean Wade}
+\newcommand{\GraduationMonth}{December}
+\newcommand{\GraduationYear}{2019}
+
+% Set up the internal PDF information so that it becomes part of the document
+% metadata.  The pdfinfo command will display this.
+\hypersetup{%
+    pdftitle=\Title,%
+    pdfauthor=\Author,%
+    pdfsubject={PhD Dissertation, BYU CS Department: %
+                Degree Granted \GraduationMonth~\GraduationYear, Document Created \today},%
+    pdfkeywords={synthetic data, data augmentation, cervical cancer, medical imaging}%
+}
+
+% Rewrite the itemize, description, and enumerate environments to have more
+% reasonable spacing:
+\newcommand{\ItemSep}{\itemsep 0pt}
+\let\oldenum=\enumerate
+\renewcommand{\enumerate}{\oldenum \ItemSep}
+\let\olditem=\itemize
+\renewcommand{\itemize}{\olditem \ItemSep}
+\let\olddesc=\description
+\renewcommand{\description}{\olddesc \ItemSep}
+
+% Important settings for the byumsphd class.
+\title{\Title}
+\author{\Author}
+
+\committeechair{David~Wingate}
+\committeemembera{Michael~Jones}
+\committeememberb{Christopher~Archibald}
+
+\yearcopyrighted{\GraduationYear}
+
+\documentabstract{%
+  Cervical cancer is one of the deadliest cancers among women worldwide. Every year there are over
+  250,000 deaths and 550,000 new diagnosis. These statistics are even more tragic by how disproportionately they effect different populations, with low to middle income countries accounting for 85\% of cervical cancer diagnosis.
+  
+  One of the primary reasons for the inequality is the cost and availability of cancer screenings. Early
+  diagnosis is extremely effective for treating cervical cancer. The goal of this project is to help in the
+  development of low cost sensors and new algorithms to detect cervical cancer for poor areas. My contribution in
+  this project is creating data infrastructure to prepare, augment, and train on the data. This is done through
+  the implementation or several synthetic data generation algorithms, scripts for common pipeline tasks, and developing a python package for 
+  extending the pipeline.
+}
+
+\documentkeywords{%
+    synthetic data, data augmentation, data pipeline, cervical cancer, medical imaging
+}
+
+\department{Computer~Science}
+\graduatecoordinator{Michael~Jones}
+%\collegedean{Thomas~W.~Sederberg}
+%\collegedeantitle{Associate~Dean}
+
+% Customize the name of the Table of Contents section.
+\renewcommand\contentsname{Table of Contents}
+
+% Remove all widows an orphans.  This is not normally recommended, but in a
+% paper dissertation there is no reasonable way around it; you can't exactly
+% rewrite already-published content to fix the problem.
+\clubpenalty 10000
+\widowpenalty 10000
+
+% Allow pages to have extra blank space at the bottom in order to accommodate
+% removal of widows and orphans.
+\raggedbottom
+
+% Produce nicely formatted paragraphs. There is nothing additional to do.  In
+% case you get some problems, surround your text with
+% \begin{sloppy} ... \end{sloppy}. If that does not work, try
+% \microtypesetup{protrusion=false} ... \microtypesetup{protrusion=true}
+\usepackage{microtype}
+\usepackage{float}
+\usepackage{subcaption} % loads the caption package
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage[toc,page]{appendix}
+\usepackage{forest}
+\graphicspath{ {images/} }
+
+\usepackage{siunitx}
+
+
+\begin{document}
+
+% Produce the preamble
+\microtypesetup{protrusion=false}
+\maketitle
+\microtypesetup{protrusion=true}
+
+\chapter{Introduction}
+
+Cervical cancer is one of the deadliest cancers among women worldwide. Every year there are over
+250,000 deaths and 550,000 new diagnosis \cite{kiran}. Another tragic aspect of these statistics is how disproportionately
+they effect different populations, with low to middle income countries accounting for 85\% of cervical cancer diagnosis.
+
+One of the primary reasons for this inequality is the cost and availability of cancer screenings. When caught early, cervical cancer can actually be fully cured. 
+The pre-cancerous lesions of cervical cancer take almost a decade to convert into cancerous ones, leaving a longer than usual timeline for treatment. \cite{epid}
+
+\section{The Pap Smear Screening}
+
+The Pap smear screening was developed as a test for cervical cancer. Using a small brush, a cytological sample is taken from the cervix and smeared onto a thin glass slide. 
+To clarify the cells characteristics, the smear is stained using a special dye. This emphasis the different components of the cells with specific colors, making it more clear in a microscope.
+Each microscope slide contains up to 300,000 single cells with different orientations and overlap \cite{herlev2}. This has made automatic segmentation methods challenging.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.60\textwidth]{cells/dysketarotic_059}
+  \caption{Example Pap smear slide}
+\end{figure}
+
+\section{Project Goals}
+
+The goal of this project is to help in the development of low cost sensors and new algorithms to detect cervical cancer.
+Recent advancements in image segmentation using deep neural networks provide much room for improvement on current methods.
+The primary bottleneck for this specific application is the lack of labeled data. This can be attributed to two main factors:
+cells must be segmented by skilled pathologists, which is expensive and time consuming, and strict privacy laws with medical data.
+
+In this project I addressed these challenges by building a image pipeline to solve the labeled data problem for Pap smear slides. To make this 
+pipeline extensible to future datasets, I built the python package MediAug. By simply writing a small connector to structure the data, this library
+can take in images and augment them to an infinite dataset. The augmentation methods range from simple standard practices, such as rotation, to complex methods
+like synthetic cell generation using generative adversarial neural networks.
+
+\chapter{Datasets}
+
+Due to privacy with medical data and the effort required to label, there are only two open Pap smear datasets. For my project I used these two and made the pipeline generalizable
+to future datasets.
+
+\section{SIPaKMeD}
+
+The SIPaKMeD dataset consists of 996 cluster cell images of Pap smear slides. From these, there are
+4049 individual cells that are segmented cyto-technicians. The resolution of these slides is \SI{0.201}{\micro\metre} / pixel,
+with the final slide being $2048\times 1536$. The cell segmentation is stored as a array of polygons.
+
+These cells are grouped into 5 categories: 
+(a) Dyskeratotic, (b) Koilocytotic, (c) Metaplastic, (d) Parabasal and (e) Superficial-Intermediate. Out of these categories, a-c are
+cancerous and d-e are normal. A full detailed description of each class is given in the appendix.
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox{Dysketarotic}{\includegraphics[width=0.30\textwidth]{cells/dysketarotic_059}} \quad
+  \subcaptionbox{Koilocytotic}{\includegraphics[width=0.30\textwidth]{cells/koilocytotic_110}} \quad
+  \subcaptionbox{Metaplastic}{\includegraphics[width=0.30\textwidth]{cells/metaplastic_001}}%
+  \hfill
+  \subcaptionbox{Parabasal}{\includegraphics[width=0.30\textwidth]{cells/parabasal_020}} \quad
+  \subcaptionbox{Superficial-Intermediate}{\includegraphics[width=0.30\textwidth]{cells/superficial_intermediate_007}} 
+  \caption{Cell Types}
+\end{figure}
+
+\section{Herlev}
+
+The Herlev dataset is comprised of 917 isolated, single cell images. These are distributed unequally between seven different classes of cells: superficial squamous, intermediate squamous, columnar, mild dysplasia, moderate dysplasia, severe dysplasia and carcinoma in situ.\cite{herlev}
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox*{Light Dysplastic}{\includegraphics[width=.21\textwidth]{cells/herlev/light_dysplastic}} \quad
+  \subcaptionbox*{Moderate Dysplastic}{\includegraphics[width=.21\textwidth]{cells/herlev/moderate_dysplastic}} \quad
+  \subcaptionbox*{Severe Dysplastic}{\includegraphics[width=.21\textwidth]{cells/herlev/severe_dyplastic}} \quad
+  \subcaptionbox*{Carcinoma in Situ}{\includegraphics[width=.21\textwidth]{cells/herlev/carcinoma_in_situ}}
+  \caption{Abnormal Cells}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \subcaptionbox*{Intermediate}{\includegraphics[width=.21\textwidth]{cells/herlev/normal_intermediate}} \quad
+  \subcaptionbox*{Superficial}{\includegraphics[width=.21\textwidth]{cells/herlev/normal_superficiel}} \quad
+  \subcaptionbox*{Columnar}{\includegraphics[width=.21\textwidth]{cells/herlev/normal_columnar}}
+  \caption{Normal Cells}
+\end{figure}
+
+\section{Extensibility to Future Datasets}
+
+Since we are developing a low cost sensor, all the tools I made will fit the new data into the pipeline. This 
+is done by extending the DatasetConnector class to put the data in the correct format for the Dataset class. 
+The correct format is simply:
+
+\vspace{10mm}
+
+\begin{forest}
+  for tree={
+    font=\ttfamily,
+    grow'=0,
+    child anchor=west,
+    parent anchor=south,
+    anchor=west,
+    calign=first,
+    edge path={
+      \noexpand\path [draw, \forestoption{edge}]
+      (!u.south west) +(7.5pt,0) |- node[fill,inner sep=1.25pt] {} (.child anchor)\forestoption{edge label};
+    },
+    before typesetting nodes={
+      if n=1
+        {insert before={[,phantom]}}
+        {}
+    },
+    fit=band,
+    before computing xy={l=15pt},
+  }
+[newfolder
+  [class1
+    [img1.png]
+    [img2.png]
+    [...]
+  ]
+  [class2
+    [img1.png]
+    [img2.png]
+    [...]
+  ]
+  [...]
+]
+\end{forest}
+
+\vspace{5mm}
+
+More details are given in the MediAug documentation (https://mediaug.readthedocs.io).
+
+\chapter{Synthetic Data Generation}
+
+Augmented image datasets have become invaluable to current state-of-the-art computer vision algorithms. Data hungry 
+neural networks require massive amounts of data to learn and match patterns in the image distribution.
+Even in situations where there is plenty of data available, it is often not labeled and synthetic data 
+is still necessary.
+
+Another important benefit of augmenting image data is that it serves as a very effective
+means of regularization. Regularization can be defined as any modiﬁcation made to a 
+learning algorithm that is intended to reduce generalization error, but not training error.
+With a large neural network and small number of samples, it is very easy for a model to have high
+variance by overfitting the data. Continually perturbing, rotating, and zooming prevent this by 
+lowering the training accuracy.
+
+\section{Traditional Data Augmentation}
+
+Traditional data augmentation relies on making small perturbations that do not compromise
+of the semantic content of the image. Depending on the domain of the data, several different types 
+of data augmentation can be used. Some examples include randomly flipping and rotating the image. Others can be random color 
+alterations, adding noise, random zooming, ect. When choosing what operations to perform, it is
+important to consider if the resulting image still makes sense with the original data.
+
+For Pap smear slides and cervical cells, there are many ways to generate new data. Cell images are
+rotationally invariant and scale invariant. This means we can augment by randomly rotating and zooming in to different parts of the slide.
+In addition this data is well suited to elastic deformations and altering the colors.
+
+The MediAug package provides a simple API to apply traditional image augmentation operations.
+The Augmentor class takes in a Dataset and outputs augmented images. This class can be used
+as either a generator function, or it can write a out a new dataset. To choose which operations 
+the Augmentor does, you can add a step to the pipeline called an Operation. These include methods
+such as flipping, zooming, random cropping, and elastic distortion. An Operation also has a probability
+for happening that can be set. Below are several examples of these simple augmentations on a slide.
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/example_cell}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/flip_aug1}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/flip_aug2}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/flip_aug3}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/flip_aug4}} 
+  \caption{Horizontal and vertical flipping}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/example_cell}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/elastic_deformation_aug1}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/elastic_deformation_aug2}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/elastic_deformation_aug3}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/elastic_deformation_aug4}} 
+  \caption{Elastic Deformation}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/example_cell}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/random_crop_aug1}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/random_crop_aug2}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/random_crop_aug3}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/random_crop_aug4}} 
+  \caption{Cropping}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/example_cell}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/rotate_aug1}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/rotate_aug2}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/rotate_aug3}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/rotate_aug4}} 
+  \caption{Rotation}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/example_cell}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/zoom_aug1}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/zoom_aug2}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/zoom_aug3}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{augment/zoom_aug4}} 
+  \caption{Zoom}
+\end{figure}
+
+\section{Inserting Cells}
+
+The primary use case this pipeline is built for is segmenting cancerous cells on a slide.
+Both available datasets are not sufficient to solve this task. The SIPaKMeD dataset has some
+of the cells labeled, but not all. This results in negative signals for correct segmentation
+while training.
+
+MediAug is able to address this problem by inserting known cells and masks onto slides.
+Since we know the ground truth for a health slide is no segmentation, we can then add 
+random cancerous cells with their corresponding segmentation to the slide. This is a weakly 
+supervised data augmentation method that can give us the dataset we want.
+
+When a Dataset object is created, you can specify which classes of slides to use and what classes of cells.
+There are then a variety of hyper parameters such as range of the amount of cells to add, rotation, scale, ect.
+To help the cells blend in once inserted I dilate the cell mask and then convolve a Gaussian blur kernel. I then use
+the result as an alpha mask to blend it in so the edges are not as sharp. These parameters need to be adjusted to
+get the best results.
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox*{}{\includegraphics[width=.41\textwidth]{add_cells/7}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.41\textwidth]{add_cells/7-mask}} 
+
+  \subcaptionbox*{}{\includegraphics[width=.41\textwidth]{add_cells/71}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.41\textwidth]{add_cells/71-mask}}
+
+  \subcaptionbox*{Image}{\includegraphics[width=.41\textwidth]{add_cells/81}} \quad
+  \subcaptionbox*{Mask}{\includegraphics[width=.41\textwidth]{add_cells/81-mask}} 
+  \caption{Inserted cell examples}
+\end{figure}
+
+
+\section{Conditional Generative Adversarial Networks}
+
+    Another major contribution to the package is using generative adversarial networks (GANs) to
+generate completely new images and their corresponding segmentation masks. To do this I implemented
+the Pix2Pix conditional GAN paper \cite{pix2pix}. The high level idea is given an input image and random vector, the network
+will produce and output an image that is drawn from the data distribution conditional on the input image. For my 
+case the input was the mask of a cell and the output was the image of the cell. With this GAN trained I can
+generate new cell images and know their segmentation map.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.9\textwidth]{pix2pix}
+  \caption{Pix2Pix Architecture \cite{pix2pix-image}}
+\end{figure}
+
+More specifically we are learning a mapping from an observed image, $x$, and a random noise vector $z$. This 
+gives $G: \{ x, z \} \rightarrow y$. The noise vector is important because otherwise this would just be deterministic.
+By picking $z$ we are randomly sampling from a distribution of cells with this shape. 
+As illustrated above, the architecture has two networks, the generator $G$ and discriminator $D$. The generator
+produces $y$ and the discriminator takes in a real $y$ and generated $y$ D and gives an estimate of the 
+probability that $y$ is real
+
+% Mathematically the objective function of a conditional GAN can be expressed as:
+
+% $$\mathcal{L}_{cGAN} = \mathbb{E}_{x,y}[\log D(x,y)] + \mathbb{E}_{x,z}[\log (1 - D(x, G(x, z))]$$
+
+
+\begin{figure}[H]
+  \centering
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/1-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/1-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/1-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/1-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/1-inputs}} 
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/1-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/1-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/1-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/1-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/1-outputs}} 
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/1-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/1-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/1-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/1-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/1-targets}} 
+
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/2-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/2-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/2-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/2-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/2-inputs}} 
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/2-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/2-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/2-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/2-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/2-outputs}} 
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/2-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/2-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/2-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/2-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/2-targets}} 
+  \caption{Cell generation from input mask}
+
+\end{figure}
+\begin{figure}[H]
+  \centering
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/3-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/3-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/3-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/3-inputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/3-inputs}} 
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/3-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/3-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/3-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/3-outputs}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/3-outputs}} 
+
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/dyskeratotic/3-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/koilocytotic/3-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/metaplastic/3-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/parabasal/3-targets}} \quad
+  \subcaptionbox*{}{\includegraphics[width=.17\textwidth]{pix2pix/superficial-intermediate/3-targets}} 
+  \caption{Cell generation from input mask}
+\end{figure}
+
+The synthetic cells above were generated with only the segmentation masks of cells. These cell examples were held out from training, yet the synthetic and real cells are still very similar. This similarity shows how well the GAN captured the distribution of cells of the given shape. To additionally verify
+the value of the synthetic data, a simple convolutional neural network was trained on only synthetic images
+and told to classify the cell. Once trained, the networks accuracy was compared using synthetic test data and real test
+data, and both were within 1\%.
+
+% \section{Convolutional Neural Network}
+
+% \section{Unet Segmentation}
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=.75\textwidth]{unet}
+%   \caption{Unet Architecture}
+% \end{figure}
+
+% \chapter{Experiments and Results}
+
+% Trainging a cnn model on synthetic. giving it real data to predict gives
+% accuracy of .2409. The real one is .2589
+
+% \textbf{Cell 5 part classification: CNN}
+
+% loss: 0.0116 \\
+% acc: 0.9953 \\
+% val loss 0.2423 \\
+% val acc: 0.9513
+
+\chapter{Conclusion}
+
+
+
+\section{Learning Outcomes}
+
+This project was a great experience to grow and complete my studies. I have had the opportunity to work with many tools that touch numerous different aspects of computer science. I learned best practices for formatting and building my python code into a library, with proper documentation and easy installation. I implemented a research paper by writing tensorflow models that utilize multiple GPUs and I wrote custom docker images and scripts to run models and data generation on remote hardware.
+
+\section{Moving Forward and Final Thoughts}
+
+The pipeline I created will be very useful going forward in cervical cancer research.
+The MediAug package provides tools to simply create weekly supervised training sets that are
+infinite in size. The API allows the user to tune rotation, position, scale, and alpha of new cells on slides. To further stretch the value of our limited data, scripts are provided to train a conditional GAN to generate completely new cells with their corresponding segmentation maps. All these tasks can be scaled across multiple cores and machines to fit any amount of future image data. With the right data preparation, it will be exciting to see future computer aided developments in cervical cancer screening.
+
+
+\begin{appendices}
+  \chapter{Cell Type Descriptions}
+
+  \noindent \textbf{Superficial-Intermediate cells} constitute the majority of the cells found in a Pap test. Usually they are flat with round, oval or polygonal shape cytoplasm stains mostly eosinophilic or cyanophilic. They contain a central pycnotic nucleus. They have well defined, large polygonal cytoplasm and easily recognized nuclear limits (small pycnotic in the superficial and vesicular nuclei in intermediate cells). These type of cells show the characteristics morphological changes (koilocytic atypia) due to more severe lesions.
+  \\ \textbf{Parabasal cells} are immature squamous cells and they are the smallest epithelial cells seen on a typical vaginal smear. The cytoplasm is generally cyanophilic and they usually contain a large vesicular nucleus. It must be noted that parabasal cells have similar morphological characteristic with the cells identified as metaplastic cells and it is difficult to be distinguished from them.    
+  \\ \textbf{Koilocytotic cells} correspond most commonly in mature squamous cells (intermediate and superficial) and some times in metaplastic type koilocytotic cells. They appear most often cyanophilic, very lightly stained and they are characterized by a large perinuclear cavity. The periphery of the cytoplasm is very dense stained. The nuclei of koilocytes are usually enlarged, eccentrically located, hyperchromatic and exhibit irregularity of the nuclear membrane contour. 
+  \\ \textbf{Dysketarotic cells} are squamous cells which undergone premature abnormal keratinization within individual cells or more often in three-dimensional clusters. They exhibit a brilliant orangeophilic cytoplasm. They are characterized by the presence of vesicular nuclei, identical to the nuclei of koilcytotic cells. In many cases there are binucleated and/or multinucleated cells.
+  \\ \textbf{Metaplastic Cells} are small or large parabasal-type cells with prominent cellular borders, often exhibiting eccentric nuclei and sometimes containing a large intracellular vacuole. The staining in the center portion is usually light brown and it often differs from that in the marginal portion. Also, there is essentially a darker-stained cytoplasm and they exhibit great uniformity of size and shape compared to the parabasal cells, as their characteristic is the well defined, almost round shape of cytoplasm.\cite{sipakmed}
+
+\end{appendices}
+
+\bibliographystyle{plainnat}
+\bibliography{bib}
+\end{document}
