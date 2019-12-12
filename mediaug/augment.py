@@ -15,6 +15,14 @@ from skimage.exposure import match_histograms
 from mediaug.image_utils import is_greyscale, rotate, soften_mask, image_on_image_alpha, get_blank_mask
 from mediaug.dataset import Dataset
 
+class Augmentor:
+    pass
+
+
+class Operation:
+    pass
+
+
 def get_data_generator(image_path, mask_path, batch_size=1):
     pipeline = Augmentor.Pipeline(image_path)
     if mask_path is not None:
@@ -44,7 +52,7 @@ def randomly_insert_cells(img: np.array, mask: np.array,
         num_cell_range (tuple): ex (1, 5)
 
     Returns:
-       new_img (np.array)
+        new_img (np.array)
         new_mask (np.array)
     """
     h, w = img.shape[:2]

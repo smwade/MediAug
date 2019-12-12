@@ -6,7 +6,7 @@ from tqdm import tqdm
 from mediaug.image_utils import read_png, save_img
 from mediaug.download import get_data_cache
 from random import randint
-
+# TODO: Documentation
 
 class DataPoint:
 
@@ -30,6 +30,11 @@ class DataPoint:
 
 
 class Dataset:
+    """Dataset object for managing image augmentation
+
+    Attributes:
+        data_path (str): Path to the data directory root
+    """
 
     def __init__(self, data_path=None, classes=None):
         self.data_path = data_path

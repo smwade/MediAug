@@ -1,56 +1,70 @@
-import cv2
-import numpy as np
 from PIL import Image, ImageSequence, ImageDraw
+import numpy as np
+import cv2
 
 from mediaug.utils import convert_array_to_poly
 from mediaug.variables import COLOR_CYTO_MASK, COLOR_NUC_MASK
 
 
 def read_tiff(path):
-    """ Reads an image with a .tff extension, used in the Unet example
-    Returns np.array
+    """ Reads an image with a .tff extension, used in the Unet example.
+    Args:
+      path (str): The path of the image
+    Returns:
+      ans (np.array): Numpy array of the image values
     """
     return np.array([np.array(p) for p in ImageSequence.Iterator(Image.open(path))])
 
 
 def read_bmp(img_path):
-    """ Reads an image with a .bmp extension Returns np.array """
+    """ Reads an image with a .bmp extension Returns np.array 
+    Args:
+      path (str): The path of the image
+    Returns:
+      ans (np.array): Numpy array of the image values
+    """
     return cv2.imread(img_path)
 
 
 def read_png(img_path):
-    """ Reads an image with a .png extension. Returns np.array """
-    return cv2.imread(img_path)
-
-
-def read_img(img_path):
-    """ Reads an image
+    """ Reads an image with a .png extension. Returns np.array
     Args:
-      img_path (str): The image path (png, jpg, or bmp)
+      path (str): The path of the image
     Returns:
-      img (np.array): The image array
+      ans (np.array): Numpy array of the image values
     """
     return cv2.imread(img_path)
 
 
 def read_dat_file(path):
-    """ Reads an .dat file with polygons, the data from SIPaKMeD
+    """ Reads an .dat file with polygons, the data from SIPaKMeD. Returns np.array
     Args:
-      path (str): The path to polygon .dat file
+      path (str): The path of the .dat file
     Returns:
-      poly_array (np.array): Array of (x, y) points for the polygon
+      ans (np.array): The [n,2] array of a polygon
     """
     return np.loadtxt(path, delimiter=',')
 
 
 def save_img(img, path):
-    """ Save an img to path """
+    """ Save an img to given path
+    Args:
+      img (np.array): The image numpy array
+      path (str): The path to save the image to
+    """
     cv2.imwrite(path, img)
     return path
 
 
 def rotate(image, angle):
-    """ Rotates an image by angle, increases the dimension as necessary """
+    """ Rotates an image by angle in degrees, increases 
+    the dimension of the imageas necessary
+    Args:
+      image (np.array): Image array
+      angle (int): Degree of rotation clockwise in degrees
+    Returns:
+      rotated (np.array): The new rotated image array
+    """
     (h, w) = image.shape[:2]
     (cX, cY) = (w // 2, h // 2)
  
@@ -72,7 +86,13 @@ def rotate(image, angle):
 
 
 def soften_mask(mask, amount=5):
-    """ Softens the edges of a mask by dialating it and then Gaussian blurring"""
+    """ Softens the edges of a mask by dialating it and then Gaussian blurring
+    Args:
+      mask (np.array): The mask array
+      amount (int): The number of times to apply the dilation, should be arround 5
+    Returns:
+      ans (np.array): The transformed mask
+    """
     kernel = np.ones((5,5), np.uint8) 
     mask_dilation = cv2.dilate(mask, kernel, iterations=amount)
     blur = cv2.GaussianBlur(mask_dilation, (5,5), 0)
@@ -80,6 +100,13 @@ def soften_mask(mask, amount=5):
 
 
 def get_blank_mask(img, greyscale=False):
+    """ Return a blank mask the same size as the given image
+    Args:
+      img (np.array): The input image array
+      greyscale (Boolean): Make it a single channel mask
+    Returns:
+      mask (np.array): Black mask the size of img
+    """
     if greyscale:
         return np.zeros(img.shape[:2], np.uint8)
     return np.zeros(img.shape,np.uint8)
@@ -87,7 +114,14 @@ def get_blank_mask(img, greyscale=False):
 
 def image_on_image_alpha(bg, fg, fg_mask, center):
     """ Place an image on an image with a backround mask
-    Blends using the alpha
+    Blends them using the alpha mask.
+    Args:
+      bg (np.array): Background image array
+      fg (np.array): Foreground image array
+      fg_mask (np.array): Foreground alpha mask array
+      center (tuple[int,int]): The postion on bg to place fg
+    Returns:
+      ans (np.array): The merged image
     """
     alpha = np.zeros(bg.shape[:2], dtype=np.uint8)
     alpha = place_img_on_img(alpha, fg_mask, center)
@@ -103,10 +137,13 @@ def image_on_image_alpha(bg, fg, fg_mask, center):
 
 
 def place_img_on_img(bg, fg, center):
-    """
-    bg (np.array): backgourn image
-    fg (np.array): foreground image
-    center (x, y): where to put CENTER of fg image
+    """ Place an image on top of another image
+    Args:
+      bg (np.array): Backgourn image
+      fg (np.array): Foreground image
+      center (x, y): Where to put CENTER of fg image
+    Returns:
+      ans (np.array): The new image
     """
     ch, cw = center
     fg_h, fg_w = fg.shape[:2]
@@ -148,7 +185,14 @@ def place_img_on_img(bg, fg, center):
 
 
 def generate_cell_mask(img, cyto, nuc):
-    """ Generate a mask for a labelled cell """
+    """ Generate a mask for a labelled cell
+    Args:
+      img (np.array): The image array
+      cyto (np.array): A [n,2] numpy array representing the polygon for the cytoplasm of a cell
+      nuc (np.array): A [n,2] numpy array representing the polygon for the nucleus of a cell
+    Returns:
+      mask (np.array): The mask of parts of a cell
+    """
     w, h, _ = img.shape
     mask = Image.new(mode="RGB", size=(h, w))
     ImageDraw.Draw(mask).polygon(convert_array_to_poly(cyto), outline=None, fill=COLOR_CYTO_MASK)
@@ -156,8 +200,15 @@ def generate_cell_mask(img, cyto, nuc):
     return np.array(mask)
 
 
-def generate_full_mask(img, cytos, nucs):
-    """ Generates a mask for any number of cells on a slide """
+def generate_cell_mask_list(img, cytos, nucs):
+    """ Generate a masks for a list of labelled cell in slide
+    Args:
+      img (np.array): The image array
+      cytos (list[np.array]): List of[n,2] numpy array representing the polygon for the cytoplasm of a cell
+      nucs (list[np.array]): List of [n,2] numpy array representing the polygon for the nucleus of a cell
+    Returns:
+      mask (np.array): The mask of cells in slide
+    """
     h, w, _ = img.shape
     mask = Image.new(mode="RGB", size=(w, h))
     for poly in cytos:
@@ -168,7 +219,12 @@ def generate_full_mask(img, cytos, nucs):
 
 
 def is_greyscale(img):
-    """ Checks if an image array is greyscale. Returns bool. """
+    """ Checks if an image array is greyscale
+    Args:
+      img (np.array): The image array
+    Returns:
+      is_greyscaled (Boolean): Is the image a greyscale image
+    """
     if len(img.shape) < 3:
         return True
     return False

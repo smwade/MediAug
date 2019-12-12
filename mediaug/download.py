@@ -6,7 +6,12 @@ import zipfile
 
 
 def download_sipakmed(data_dest=None):
-    """ Download the SIPaKMeD dataset, http://cs.uoi.gr/~marina """
+    """ Download the SIPaKMeD dataset, http://cs.uoi.gr/~marina
+    Args:
+      data_dest (str): The path of dir to store data. If noe will default to package cache
+    Returns:
+      None
+    """
     if data_dest is None:
         data_dest = join(get_data_cache(), 'sipakmed_raw')
     if os.path.exists(data_dest):
@@ -43,13 +48,22 @@ def download_sipakmed(data_dest=None):
     print('Finished downloading.')
     
 
-def download_smear():
-    raise NotImplementedError('Get it yourself at: https://mde-lab.aegean.gr/downloads')
+def download_smear(data_dest=None):
+    """ Download the Hervel smear dataset
+    Args:
+      data_dest (str): The path of dir to store data. If noe will default to package cache
+    Returns:
+      None
+    """
+    raise NotImplementedError('Get it yourself, not implemented.')
 
 
 def get_data_cache():
-    """ Get the cache where datasets are stored.
-    Defaults to ~/.mediaug
+    """ Get the cache where datasets are stored. Defaults to ~/.mediaug
+    Args:
+      None
+    Returns:
+      path (str): The path to the data cache on the system
     """
     p = Path(join(Path.home(), '.mediaug'))
     p.mkdir(exist_ok=True)
