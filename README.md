@@ -9,6 +9,8 @@ any cell data that has an image and mask of different types of
 cells. Currently supports general image augmentation techniques
 as well as specialized ones like cell insertion and blending.
 
+![example_cell](/Users/sean/project/cancerDetection/MediAug/docs/project_writeup/images/augment/example_cell.png)
+
 ## Installation
 
 To install:
@@ -16,6 +18,49 @@ To install:
 ```bash
 $ git clone https://github.com/smwade/MediAug
 $ python setup.py install
+```
+
+## Datasets
+
+There are two main open datasets for Pap smear images and MediAug is able to support both.
+
+###  SMEAR
+
+The SMEAR dataset is 917 indavidual cells. They are segmented by nucleus and cytoplasm.
+
+<https://mde-lab.aegean.gr/downloads>
+
+### SPIaKMeD
+
+The SIPaKMeD Database consists of 4049 images of isolated cells that have been manually cropped from 966 cluster cell images of Pap smear slides. These images were acquired through a CCD camera adapted to an optical microscope. The cell images are divided into five categories containing normal, abnormal and benign cells.
+
+<http://cs.uoi.gr/~marina/sipakmed.html>
+
+
+## Custom Dataset
+
+The data pipeline can work with other datasets besides SIPaKMed and SMEAR. In order to
+use another, you must convert the data to the correct format.
+
+```
+slides/
+		metaplastic/
+				image/
+				mask/
+		parabasal/
+				image/
+				mask/
+		...
+```
+
+And for cells:
+
+```
+cells/
+		metaplastic/
+				image/
+				mask/
+		...
 ```
 
 ## CLI
