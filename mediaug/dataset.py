@@ -1,8 +1,10 @@
 import os
 from os.path import join
 import numpy as np
+from PIL import Image
 import cv2
 from tqdm import tqdm
+from random import choice
 from mediaug.image_utils import read_png, save_img
 from mediaug.download import get_data_cache
 from random import randint
@@ -22,8 +24,16 @@ class DataPoint:
         return read_png(self.img_path)
 
     @property
+    def pil_img(self):
+        return Image.fromarray(read_png(self.img_path))
+
+    @property
     def mask(self):
         return read_png(self.mask_path)
+
+    @property
+    def pil_mask(self):
+        return Image.fromarray(read_png(self.mask_path))
 
     def __repr__(self):
         return f'<img_path: {self.img_path}>\n<mask_path: {self.mask_path}>'
@@ -67,6 +77,11 @@ class Dataset:
 
     def add_datapoint(self, dp):
         self.data[dp._class].append(dp)
+
+    
+    def random_sample(self):
+        _class = choice(self.classes)
+        return choice(self.data[_class])
 
 
     def add_data(self, img, mask, _class, name):

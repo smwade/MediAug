@@ -6,6 +6,26 @@ from mediaug.utils import convert_array_to_poly
 from mediaug.variables import COLOR_CYTO_MASK, COLOR_NUC_MASK
 
 
+def np_to_pil(img):
+	""" Converts a PIL format image to numpy
+    Args:
+	  new_img (np.array): converted image
+	Returns:
+	  img (PIL.Image): input image
+	"""
+	return Image.fromarray(img)
+
+
+def pil_to_np(img):
+	""" Converts a PIL format image to numpy
+	Args:
+	  img (PIL.Image): input image
+    Returns:
+	  new_img (np.array): converted image
+	"""
+	return np.array(img)
+
+
 def read_tiff(path):
     """ Reads an image with a .tff extension, used in the Unet example.
     Args:
@@ -44,6 +64,16 @@ def read_dat_file(path):
       ans (np.array): The [n,2] array of a polygon
     """
     return np.loadtxt(path, delimiter=',')
+
+
+def read_img(img_path):
+    """ Reads an image
+    Args:
+      path (str): The path of the image
+    Returns:
+      ans (np.array): Numpy array of the image values
+    """
+    return cv2.imread(img_path)
 
 
 def save_img(img, path):

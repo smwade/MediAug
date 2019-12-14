@@ -14,13 +14,31 @@ from skimage.exposure import match_histograms
 
 from mediaug.image_utils import is_greyscale, rotate, soften_mask, image_on_image_alpha, get_blank_mask
 from mediaug.dataset import Dataset
+from mediaug.image_utils import pil_to_np
 
-class Augmentor:
-    pass
+# import some operations
+from Augmentor.Operations import Crop, Rotate, Flip, Distort, Zoom, RandomBrightness, HistogramEqualisation, Scale 
 
 
-class Operation:
-    pass
+def perform_operation(dp, op):
+    """ Do an operation to a DataPoint
+    Args:
+      dp (DataPoint): An image data point
+      op (Operation): An augmentation operation
+    Returns:
+      augmented
+    """
+    return (pil_to_np(x) for x in op.perform_operation([dp.pil_img, dp.pil_mask]))
+
+class Pipeline(Augmentor.DataPipeline):
+    def __init__(self, ds):
+        images, labels = [], []
+        for i, _class in enumerate(ds.classes):
+            class_label = i
+            for x in ds[_class]:
+                images.append([x.img, x.mask])
+                labels.append(class_label)
+        Augmentor.DataPipeline.__init__(self, images, labels)
 
 
 def get_data_generator(image_path, mask_path, batch_size=1):
