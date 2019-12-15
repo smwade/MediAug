@@ -40,6 +40,20 @@ class Pipeline(Augmentor.DataPipeline):
                 labels.append(class_label)
         Augmentor.DataPipeline.__init__(self, images, labels)
 
+    def generator(self, batch_size=1):
+        gen = Augmentor.DataPipeline.generator(self, batch_size=batch_size)
+        while True:
+            images, classes = next(gen)
+            image_list, mask_list = [], []
+            for x in images:
+                img, mask = x[0], x[1]
+                image_list.append(img)
+                mask_list.append(mask)
+            if batch_size == 1:
+                yield image_list[0], mask_list[0], classes[0]
+            else:
+                yield image_list, mask_list, classes
+
 
 def get_data_generator(image_path, mask_path, batch_size=1):
     pipeline = Augmentor.Pipeline(image_path)
