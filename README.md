@@ -66,6 +66,10 @@ cells/
   ...
 ```
 
+## Notebooks
+
+To show the library in action there are several notebooks that address key aspects of the library, such as what is a dataset, using Operations, and creating a Pipeline. These are found in `notebooks/`
+
 ## CLI
 
 MediAug comes with a CLI with useful scripts. These include:
