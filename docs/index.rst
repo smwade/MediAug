@@ -43,7 +43,12 @@ The list of all can be seen with the command
 
    source/mediaug
 
+Jupyter Notebooks
+^^^^^^^^^^^^^^^^^
 
+As a brief intro to the package there are several jupyter notbooks. These go over
+things like loading the data, using augmentation operations, and creating a processing
+pipeline.
 
 Indices and tables
 ******************
