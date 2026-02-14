@@ -1,19 +1,38 @@
-# Compiled python modules.
+# Compiled python modules
 *.pyc
+__pycache__/
+*.pyo
 
-# Setuptools distribution folder.
+# Distribution / packaging
 /dist/
+/build/
+*.egg-info/
+*.egg
 
-# Python egg metadata, regenerated from source files by setuptools.
-/*.egg-info
-/*.egg
+# Virtual environments
+.venv/
+venv/
 
-#other
+# IDE / editors
 **/.DS_Store
 **/.vscode
+.idea/
 
+# Sphinx / Docs
 **/_build
 **/_static
 **/_templates
 
+# Jupyter
 **/.ipynb_checkpoints
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# ruff
+.ruff_cache/

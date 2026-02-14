@@ -1,11 +1,11 @@
 # MediAug
 
-[![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-Data augmentation toolkit for histology slide images, primarily developed for cervical cancer detection via Pap smear analysis. Supports general image augmentation techniques as well as specialized operations like cell insertion and blending.
+Medical image augmentation for histology and cytology slides.
 
-![example_cell](docs/project_writeup/images/augment/example_cell.png)
+MediAug provides **cell-level augmentation** — inserting cells with realistic blending, histogram matching, and mask propagation into slide images. This capability is not available in general-purpose augmentation libraries. It is primarily developed for cervical cancer screening (Pap smear slides) but works with any cell image data that has image/mask pairs.
 
 ## Results
 
@@ -22,80 +22,117 @@ MediAug supports several augmentation techniques. Here are examples of each:
 ## Installation
 
 ```bash
+pip install mediaug
+```
+
+For development:
+
+```bash
 git clone https://github.com/smwade/MediAug
 cd MediAug
-python setup.py install
+pip install -e ".[dev,viz]"
 ```
 
-## Datasets
+## Quick Start
 
-MediAug supports two open Pap smear datasets:
+```python
+import mediaug
+import numpy as np
 
-### SMEAR
+# Load a dataset of cell images
+ds = mediaug.CellDataset("path/to/cells")
 
-917 individual cells segmented by nucleus and cytoplasm.
-[Download](https://mde-lab.aegean.gr/downloads)
+# Build an augmentation pipeline
+pipeline = mediaug.Compose([
+    mediaug.Rotate(max_angle=30, p=0.5),
+    mediaug.FlipHorizontal(p=0.5),
+    mediaug.RandomBrightness(limit=0.2, p=0.3),
+    mediaug.InsertCell(cell_source=ds, num_cells=(1, 5), p=0.8),
+])
 
-### SIPaKMeD
+# Apply with full reproducibility
+rng = np.random.default_rng(42)
+sample = ds.random_sample(rng=rng)
+augmented = pipeline(sample, rng=rng)
+```
 
-4,049 images of isolated cells manually cropped from 966 cluster cell images. Cells are divided into five categories: normal, abnormal, and benign.
-[Download](http://cs.uoi.gr/~marina/sipakmed.html)
+## Available Transforms
 
-## Custom Dataset
+### Geometric (applied to both image and mask)
 
-The data pipeline works with custom datasets. Convert your data to this format:
+| Transform | Parameters |
+|-----------|-----------|
+| `Rotate` | `max_angle`, `p` |
+| `FlipHorizontal` | `p` |
+| `FlipVertical` | `p` |
+| `RandomCrop` | `min_area`, `max_area`, `p` |
+| `Resize` | `height`, `width`, `p` |
+| `RandomScale` | `min_scale`, `max_scale`, `p` |
+| `ElasticDistortion` | `grid_size`, `magnitude`, `p` |
+
+### Intensity (applied to image only)
+
+| Transform | Parameters |
+|-----------|-----------|
+| `RandomBrightness` | `limit`, `p` |
+| `RandomContrast` | `limit`, `p` |
+| `GaussianNoise` | `std`, `p` |
+| `HistogramMatching` | `reference`, `p` |
+| `StainNormalization` | `reference`, `luminosity_threshold`, `p` |
+
+### Cell-level (unique to MediAug)
+
+| Transform | Parameters |
+|-----------|-----------|
+| `InsertCell` | `cell_source`, `cell_classes`, `num_cells`, `scale_mean`, `scale_std`, `blend_method`, `edge_softening`, `p` |
+
+### Composition
+
+| Class | Description |
+|-------|-------------|
+| `Compose` | Apply transforms sequentially |
+| `OneOf` | Randomly pick and apply one transform |
+
+## Dataset Format
+
+MediAug expects image/mask pairs organized by cell class:
 
 ```
-slides/
-  metaplastic/
+dataset/
+  class_name/
     image/
+      001.png
+      002.png
     mask/
-  parabasal/
-    image/
-    mask/
-  ...
+      001.png
+      002.png
+```
 
-cells/
-  metaplastic/
-    image/
-    mask/
-  parabasal/
-    image/
-    mask/
-  ...
+### Supported Datasets
+
+- **SIPaKMeD**: 4,049 cells across 5 categories ([link](http://cs.uoi.gr/~marina/sipakmed.html))
+- **SMEAR**: 917 cells segmented by nucleus/cytoplasm ([link](https://mde-lab.aegean.gr/downloads))
+
+Download SIPaKMeD:
+
+```bash
+mediaug download
+```
+
+## CLI
+
+```bash
+mediaug --help          # Show all commands
+mediaug info <dir>      # Show dataset statistics
+mediaug resize ...      # Resize images in a directory
+mediaug augment ...     # Generate augmented dataset
+mediaug download        # Download SIPaKMeD dataset
 ```
 
 ## Notebooks
 
-Interactive notebooks demonstrating key features (datasets, operations, pipelines) are in `notebooks/`.
+Example notebooks are available in `notebooks/` demonstrating dataset loading, augmentation pipelines, and cell insertion.
 
-## CLI
+## License
 
-MediAug includes a CLI for common tasks:
-
-```bash
-# See all available commands
-mediaug --help
-
-# Generate an augmented dataset
-mediaug generate-augment-dataset \
-  --slide_dir <slide_dir> \
-  --cell_dir <cell_dir> \
-  --out_dir <out_dir> \
-  --num 1000 \
-  --max_cells 10
-
-# Prepare images for Pix2Pix training
-mediaug prepare-pix2pix-images \
-  --image_dir <image_dir> \
-  --mask_dir <mask_dir> \
-  --out_dir <out_dir> \
-  --split_ratio <split_ratio>
-
-# Recursively resize all images in a directory
-mediaug resize-images \
-  --input_dir <input_dir> \
-  --out_dir <out_dir> \
-  --w 256 \
-  --height 256
-```
+MIT
