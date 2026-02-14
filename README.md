@@ -1,46 +1,49 @@
 # MediAug
 
-## Overview
+[![Python 3.6+](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-MediAug is a set of tools for data augmentation of histology
-slides. It is primaraly developed for cervical cancer by
-augmenting Pap smear slides. However, it can be extended to
-any cell data that has an image and mask of different types of
-cells. Currently supports general image augmentation techniques
-as well as specialized ones like cell insertion and blending.
+Data augmentation toolkit for histology slide images, primarily developed for cervical cancer detection via Pap smear analysis. Supports general image augmentation techniques as well as specialized operations like cell insertion and blending.
 
 ![example_cell](docs/project_writeup/images/augment/example_cell.png)
 
+## Results
+
+MediAug supports several augmentation techniques. Here are examples of each:
+
+| Technique | Output |
+|-----------|--------|
+| Rotation | ![rotate](docs/project_writeup/images/augmentation_examples/rotate_aug1.png) |
+| Elastic Deformation | ![elastic](docs/project_writeup/images/augmentation_examples/elastic_deformation_aug1.png) |
+| Random Crop | ![crop](docs/project_writeup/images/augmentation_examples/random_crop_aug1.png) |
+| Zoom | ![zoom](docs/project_writeup/images/augmentation_examples/zoom_aug1.png) |
+| Flip | ![flip](docs/project_writeup/images/augmentation_examples/flip_aug1.png) |
+
 ## Installation
 
-To install:
-
 ```bash
-$ git clone https://github.com/smwade/MediAug
-$ python setup.py install
+git clone https://github.com/smwade/MediAug
+cd MediAug
+python setup.py install
 ```
 
 ## Datasets
 
-There are two main open datasets for Pap smear images and MediAug is able to support both.
+MediAug supports two open Pap smear datasets:
 
-###  SMEAR
+### SMEAR
 
-The SMEAR dataset is 917 indavidual cells. They are segmented by nucleus and cytoplasm.
+917 individual cells segmented by nucleus and cytoplasm.
+[Download](https://mde-lab.aegean.gr/downloads)
 
-<https://mde-lab.aegean.gr/downloads>
+### SIPaKMeD
 
-### SPIaKMeD
-
-The SIPaKMeD Database consists of 4049 images of isolated cells that have been manually cropped from 966 cluster cell images of Pap smear slides. These images were acquired through a CCD camera adapted to an optical microscope. The cell images are divided into five categories containing normal, abnormal and benign cells.
-
-<http://cs.uoi.gr/~marina/sipakmed.html>
-
+4,049 images of isolated cells manually cropped from 966 cluster cell images. Cells are divided into five categories: normal, abnormal, and benign.
+[Download](http://cs.uoi.gr/~marina/sipakmed.html)
 
 ## Custom Dataset
 
-The data pipeline can work with other datasets besides SIPaKMed and SMEAR. In order to
-use another, you must convert the data to the correct format.
+The data pipeline works with custom datasets. Convert your data to this format:
 
 ```
 slides/
@@ -51,11 +54,7 @@ slides/
     image/
     mask/
   ...
-```
 
-And for cells:
-
-```
 cells/
   metaplastic/
     image/
@@ -68,36 +67,35 @@ cells/
 
 ## Notebooks
 
-To show the library in action there are several notebooks that address key aspects of the library, such as what is a dataset, using Operations, and creating a Pipeline. These are found in `notebooks/`
+Interactive notebooks demonstrating key features (datasets, operations, pipelines) are in `notebooks/`.
 
 ## CLI
 
-MediAug comes with a CLI with useful scripts. These include:
-
-* generate-augment-dataset
-* prepare-pix2pix-images
-* resize-images
-
-The list of all can be seen with the command
+MediAug includes a CLI for common tasks:
 
 ```bash
-$ mediaug --help
-```
+# See all available commands
+mediaug --help
 
-### Generate cell augmented dataset
+# Generate an augmented dataset
+mediaug generate-augment-dataset \
+  --slide_dir <slide_dir> \
+  --cell_dir <cell_dir> \
+  --out_dir <out_dir> \
+  --num 1000 \
+  --max_cells 10
 
-```bash
-$ mediaug generate-augment-dataset --slide_dir <slide_dir> --cell_dir <cell_dir> --out_dir <out_dir> --num 1000 --max_cells <10>
-```
+# Prepare images for Pix2Pix training
+mediaug prepare-pix2pix-images \
+  --image_dir <image_dir> \
+  --mask_dir <mask_dir> \
+  --out_dir <out_dir> \
+  --split_ratio <split_ratio>
 
-### Prepare images for Pix2Pix
-
-```bash
-$ mediaug prepare-pix2pix-images --image_dir <image_dir> --mask_dir <mask_dir> --out_dir <out_dir> --split_ratio <split_ratio>
-```
-
-### Recursivly resize all images in directory
-
-```bash
-$ mediaug resize-images --input_dir <input_dir> --out_dir <out_dir> --w 256 --height 256
+# Recursively resize all images in a directory
+mediaug resize-images \
+  --input_dir <input_dir> \
+  --out_dir <out_dir> \
+  --w 256 \
+  --height 256
 ```
